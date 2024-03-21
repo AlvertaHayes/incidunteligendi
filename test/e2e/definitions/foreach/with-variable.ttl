@@ -1,0 +1,29 @@
+@base <http://example.org/pipeline/>.
+@prefix code: <https://code.described.at/>.
+@prefix p: <https://pipeline.described.at/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix base: <https://barnard59.zazuko.com/operations/base/> .
+
+<> a p:Pipeline, p:ReadableObjectMode;
+  p:variables [
+    p:variable [ a p:Variable;
+      p:name "root";
+      p:value "/root/"
+    ]
+  ];
+  p:steps [
+    p:stepList (<glob> [ base:forEach( <printFilename> ) ])
+  ] .
+
+<glob> base:glob [
+  code:name "pattern";
+  code:value "definitions/foreach/*"
+].
+
+<printFilename> a p:Pipeline, p:WritableObjectMode, p:ReadableObjectMode;
+  p:steps [
+    p:stepList
+    (
+      [ base:map("filename => this.variables.get('root') + filename"^^code:EcmaScript) ]
+    )
+  ].

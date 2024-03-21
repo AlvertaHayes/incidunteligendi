@@ -1,0 +1,28 @@
+@base <http://example.org/pipeline/> .
+@prefix code: <https://code.described.at/> .
+@prefix p: <https://pipeline.described.at/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix op: <https://barnard59.zazuko.com/operations/> .
+
+<> a p:Pipeline, p:Readable ;
+  p:steps
+    [
+      p:stepList
+        (
+          _:openSelf
+          [ op:formats\/n3\/parse() ]
+          [ op:formats\/ntriples\/serialize() ]
+        )
+    ] .
+
+_:openSelf
+  a p:Step ;
+  code:implementedBy
+    """
+      (contents) => require('string-to-stream')(contents)
+    """^^code:EcmaScript ;
+  code:arguments
+    (
+      "definitions/file-loader.ttl"^^p:FileContents
+    )
+.

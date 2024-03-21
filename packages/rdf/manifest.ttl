@@ -1,0 +1,119 @@
+@base <https://barnard59.zazuko.com/operations/rdf/> .
+@prefix code: <https://code.described.at/> .
+@prefix p: <https://pipeline.described.at/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<mapMatch> a p:Operation, p:WritableObjectMode, p:ReadableObjectMode;
+  rdfs:label "Map (RDF/JS Quad)";
+  rdfs:comment "Calls a map function only for quads matching the given triple pattern.";
+  code:implementedBy [ a code:EcmaScriptModule;
+    code:link <node:barnard59-rdf/mapMatch.js#default>
+  ].
+
+<setGraph> a p:Operation, p:WritableObjectMode, p:ReadableObjectMode;
+  rdfs:label "Set Graph";
+  rdfs:comment "Sets the graph of all quads to the given fixed value.";
+  code:implementedBy [ a code:EcmaScriptModule;
+    code:link <node:barnard59-rdf/setGraph.js#default>
+  ].
+
+<metadata.js#append> a p:Operation, p:WritableObjectMode, p:ReadableObjectMode;
+  rdfs:label "Append metadata";
+  rdfs:comment "Fetches, updates and appends a metadata resource";
+  code:implementedBy [ a code:EcmaScriptModule;
+                       code:link <node:barnard59-rdf/metadata.js#append>
+  ].
+
+<metadata.js#voidStats> a p:Operation, p:WritableObjectMode, p:ReadableObjectMode;
+ rdfs:label "Void statistics";
+ rdfs:comment "Appends void statistics, such as counts for entities and properties";
+ code:implementedBy [ a code:EcmaScriptModule;
+                      code:link <node:barnard59-rdf/metadata.js#voidStats>
+                    ].
+
+<fs.js#parse>
+  a p:Operation, p:ReadableObjectMode ;
+  rdfs:label "Parse RDF file" ;
+  rdfs:comment "Opens and parses an RDF file, choosing the correct parser based on the extension" ;
+  code:implementedBy
+    [
+      a code:EcmaScriptModule ;
+      code:link <node:barnard59-rdf/fs.js#parse>
+    ] ;
+.
+
+<getDataset>
+  a p:Operation, p:WritableObjectMode, p:ReadableObjectMode ;
+  rdfs:label "Combine RDF stream to dataset" ;
+  rdfs:comment "The entire RDF stream is combined into a single dataset" ;
+  code:implementedBy
+    [
+      a code:EcmaScript ;
+      code:link <node:rdf-stream-to-dataset-stream/toDatasetStream.js> ;
+    ]
+.
+
+<splitDataset/byGraph>
+  a p:Operation, p:WritableObjectMode, p:ReadableObjectMode ;
+  rdfs:label "Splits RDF stream on graph" ;
+  rdfs:comment "Combines streamed quads into datasets. A new dataset is pushed when graph changes" ;
+  code:implementedBy
+    [
+      a code:EcmaScript ;
+      code:link <node:rdf-stream-to-dataset-stream/byGraph.js> ;
+    ]
+.
+
+<splitDataset/byPredicate>
+  a p:Operation, p:WritableObjectMode, p:ReadableObjectMode ;
+  rdfs:label "Splits RDF stream on predicate" ;
+  rdfs:comment "Combines streamed quads into datasets. A new dataset is pushed when predicate changes" ;
+  code:implementedBy
+    [
+      a code:EcmaScript ;
+      code:link <node:rdf-stream-to-dataset-stream/byPredicate.js> ;
+    ]
+.
+
+<splitDataset/bySubject>
+  a p:Operation, p:WritableObjectMode, p:ReadableObjectMode ;
+  rdfs:label "Splits RDF stream on subject" ;
+  rdfs:comment "Combines streamed quads into datasets. A new dataset is pushed when subject changes" ;
+  code:implementedBy
+    [
+      a code:EcmaScript ;
+      code:link <node:rdf-stream-to-dataset-stream/bySubject.js> ;
+    ]
+.
+
+<splitDataset/byType>
+  a p:Operation, p:WritableObjectMode, p:ReadableObjectMode ;
+  rdfs:label "Splits RDF stream by RDF type" ;
+  rdfs:comment "Combines streamed quads into datasets. A new dataset is pushed when an rdf:type triple is encountered" ;
+  code:implementedBy
+    [
+      a code:EcmaScript ;
+      code:link <node:rdf-stream-to-dataset-stream/byType.js> ;
+    ]
+.
+
+<open>
+  a p:Operation, p:ReadableObjectMode ;
+  rdfs:label "Opens an RDF from web or local file" ;
+  rdfs:comment "Web resource requires content-type header. Will try n-triples as fallback. Local paths will be relative to the current working directory" ;
+  code:implementedBy
+    [
+      a code:EcmaScriptModule ;
+      code:link <node:barnard59-rdf/open.js#default>
+    ]
+.
+
+<transformCodeImports>
+  a p:Operation, p:ReadableObjectMode, p:WritableObjectMode ;
+  rdfs:label "Transforms code:imports triples by fetching remote graphs and mergin them with the passing stream" ;
+  code:implementedBy
+    [
+      a code:EcmaScriptModule ;
+      code:link <node:barnard59-rdf/imports.js#default>
+    ]
+.

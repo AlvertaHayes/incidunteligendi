@@ -1,0 +1,75 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+@base <https://barnard59.zazuko.com/pipeline/graph-store/> .
+@prefix code: <https://code.described.at/> .
+@prefix p: <https://pipeline.described.at/> .
+@prefix op: <https://barnard59.zazuko.com/operations/> .
+
+<put> a p:Pipeline ;
+  p:variables
+    [
+      p:variable
+        [
+          a p:Variable ;
+          p:name "source" ;
+          rdfs:label "Glob of RDF documents to upload" ;
+        ],
+        [
+          a p:Variable ;
+          p:name "graph" ;
+          p:required false ;
+        ],
+        [
+          a p:Variable ;
+          p:name "endpoint" ;
+        ],
+        [
+          a p:Variable ;
+          p:name "user" ;
+          p:required false ;
+        ],
+        [
+          a p:Variable ;
+          p:name "password" ;
+          p:required false ;
+        ],
+        [
+          a p:Variable ;
+          p:name "maxQuadsPerRequest" ;
+          p:required false ;
+        ] ;
+    ] ;
+  p:steps
+    [
+      p:stepList
+        (
+          [
+            op:base\/glob
+              [
+                code:name "pattern" ;
+                code:value "source"^^p:VariableName
+              ]
+          ]
+          [ op:rdf\/fs.js\#parse () ]
+          [ op:rdf\/setGraph ( "graph"^^p:VariableName ) ]
+          [
+            op:graph-store\/put
+              [
+                code:name "endpoint" ;
+                code:value "endpoint"^^p:VariableName ;
+              ],
+              [
+                code:name "user" ;
+                code:value "user"^^p:VariableName ;
+              ],
+              [
+                code:name "password" ;
+                code:value "password"^^p:VariableName ;
+              ],
+              [
+                code:name "maxQuadsPerRequest" ;
+                code:value "maxQuadsPerRequest"^^p:VariableName ;
+              ]
+          ]
+        )
+    ] ;
+.

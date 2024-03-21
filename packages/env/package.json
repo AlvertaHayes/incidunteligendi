@@ -1,0 +1,24 @@
+{
+  "name": "barnard59-env",
+  "version": "1.2.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "prepack": "tsc"
+  },
+  "dependencies": {
+    "@zazuko/env-node": "^1.0.3",
+    "@zazuko/vocabulary-extras-builders": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zazuko/barnard59.git",
+    "directory": "packages/env"
+  },
+  "author": "Zazuko GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zazuko/barnard59/issues"
+  },
+  "homepage": "https://github.com/zazuko/barnard59"
+}

@@ -1,0 +1,25 @@
+@base <http://example.org/pipeline/>.
+@prefix code: <https://code.described.at/>.
+@prefix p: <https://pipeline.described.at/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix base: <https://barnard59.zazuko.com/operations/base/> .
+@prefix fs: <https://barnard59.zazuko.com/operations/core/fs/> .
+@prefix test: <https://barnard59.zazuko.com/operations/test/> .
+
+<> a p:Pipeline, p:Readable;
+  p:steps [
+    p:stepList
+    (
+      [ test:iterateDirectory ("definitions/foreach")]
+      [ base:forEach ( <Print> "file" ) ]
+    )
+  ] .
+
+<Print> a p:Pipeline, p:ReadableObjectMode;
+  p:steps [
+    p:stepList
+    (
+      [ fs:createReadStream("file"^^p:VariableName) ]
+      [ test:getLength ("_ => this.variables.get('file')"^^code:EcmaScript) ]
+    )
+  ].

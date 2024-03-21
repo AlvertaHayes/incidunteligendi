@@ -1,0 +1,65 @@
+@base <http://example.org/pipeline/> .
+@prefix code: <https://code.described.at/> .
+@prefix p: <https://pipeline.described.at/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<utc> a p:Pipeline, p:Readable ;
+  p:variables [
+    p:variable [
+      a p:Variable;
+      p:name "url" ;
+      p:value "https://timeapi.io/api/Time/current/zone?timeZone=UTC" ;
+    ] ,
+    <dateContext>
+  ] ;
+  p:steps <steps> .
+
+<cet> a p:Pipeline, p:Readable ;
+  p:variables [
+    p:variable [
+      a p:Variable;
+      p:name "url" ;
+      p:value "https://timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam" ;
+    ] ,
+    <dateContext>
+  ] ;
+  p:steps <steps> .
+
+<dateContext>
+  a p:Variable;
+  p:name "context" ;
+  p:value """{"date\":"http://purl.org/dc/elements/1.1/date"}""" .
+
+<steps>
+  p:stepList ( <fetch> <parseJson> <jsonldStructure> <parse> <serialize> ) .
+
+<fetch> a p:Step ;
+  code:implementedBy [ a code:EcmaScriptModule;
+    code:link <node:barnard59-http#get>
+  ];
+  code:arguments [
+    code:name "url";
+    code:value "url"^^p:VariableName
+  ].
+
+<parseJson> a p:Step ;
+  code:implementedBy [ a code:EcmaScriptModule;
+    code:link <node:barnard59-base/json.js#parse>
+  ].
+
+<jsonldStructure> a p:Step ;
+  code:implementedBy [ a code:EcmaScriptModule;
+    code:link <node:barnard59-base/map.js#default>
+  ];
+  code:arguments ("""json => {
+          return { '@context': JSON.parse(this.variables.get('context')), '@id': this.variables.get('url'), date: json.dateTime } }"""^^code:EcmaScript).
+
+<parse> a p:Step ;
+  code:implementedBy [ a code:EcmaScriptModule;
+    code:link <node:barnard59-formats/jsonld.js#parse.object>
+  ].
+
+<serialize> a p:Step ;
+  code:implementedBy [ a code:EcmaScriptModule;
+    code:link <node:barnard59-formats/ntriples.js#serialize>
+  ].

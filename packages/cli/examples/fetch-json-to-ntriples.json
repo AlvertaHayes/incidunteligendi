@@ -1,0 +1,97 @@
+{
+  "@context": {
+    "@base": "http://example.org/pipeline/",
+    "@vocab": "https://pipeline.described.at/",
+    "code": "https://code.described.at/",
+    "code:link": {
+      "@type": "@id"
+    },
+    "operation": {
+      "@type": "@id"
+    },
+    "steps": {
+      "@type": "@id"
+    },
+    "stepList": {
+      "@container": "@list"
+    }
+  },
+  "@graph": [{
+    "@id": "utc",
+    "@type": ["Pipeline", "Readable"],
+    "variables": {
+      "variable": [{
+        "@type": "Variable",
+        "name": "url",
+        "value": "https://timeapi.io/api/Time/current/zone?timeZone=UTC"
+      }, {
+        "@id": "dateContext"
+      }]
+    },
+    "steps": "steps"
+  }, {
+    "@id": "cet",
+    "@type": ["Pipeline", "Readable"],
+    "variables": {
+      "variable": [{
+        "@type": "Variable",
+        "name": "url",
+        "value": "https://timeapi.io/api/Time/current/zone?timeZone=Europe/Amsterdam"
+      }, {
+        "@id": "dateContext"
+      }]
+    },
+    "steps": "steps"
+  }, {
+    "@id": "dateContext",
+    "@type": "Variable",
+    "name": "context",
+    "value": "{\"date\":\"http://purl.org/dc/elements/1.1/date\"}"
+  }, {
+    "@id": "steps",
+    "stepList": [{
+      "@id": "fetch",
+      "code:implementedBy": {
+        "@type": "code:EcmaScriptModule",
+        "code:link": "node:barnard59-http#get"
+      },
+      "code:arguments": {
+        "code:name": "url",
+        "code:value": {
+          "@value": "url",
+          "@type": "VariableName"
+        }
+      }
+    }, {
+      "@id": "parseJson",
+      "code:implementedBy": {
+        "@type": "code:EcmaScriptModule",
+        "code:link": "node:barnard59-base/json.js#parse"
+      }
+    },{
+      "@id": "jsonldStructure",
+      "code:implementedBy": {
+        "@type": "code:EcmaScriptModule",
+        "code:link": "node:barnard59-base/map.js#default"
+      },
+      "code:arguments": {
+        "@list": [{
+          "@value": "json => { return { '@context': JSON.parse(this.variables.get('context')), '@id': this.variables.get('url'), date: json.datetime } }",
+          "@type": "code:EcmaScript"
+        }]
+      }
+    }, {
+      "@id": "parse",
+      "code:implementedBy": {
+        "@type": "code:EcmaScriptModule",
+        "code:link": "node:barnard59-formats/jsonld.js#parse.object"
+      }
+    }, {
+      "@id": "serialize",
+      "code:implementedBy": {
+        "@type": "code:EcmaScriptModule",
+        "code:link": "node:barnard59-formats/ntriples.js#serialize"
+      }
+    }]
+  }]
+}
